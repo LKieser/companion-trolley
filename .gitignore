@@ -1,0 +1,27 @@
+# colcon / ROS 2 build artifacts
+build/
+install/
+log/
+
+# VS Code
+browse*
+*.code-workspace
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+.venv/
+src/my_py_pkg/test/
+
+# CMake / build
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+Makefile
+compile_commands.json
+
+# OS junk
+.DS_Store
+Thumbs.db

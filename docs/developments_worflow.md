@@ -3,11 +3,11 @@
 ## Tmux
 ### Open Tmux
 Start a session
-'''
+```
 tmux
 ```
 use this further command to reaattach to this same session later. First create it:
-'''
+```
 tmux new -s <name>
 ```
 Then reattach to it:
@@ -32,4 +32,8 @@ tmux ls
 To end and leave pi use
 ```
 sudo poweroff
+```
+Built a swapfile. Check its use using
+```
+free -h
 ```

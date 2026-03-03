@@ -1,2 +1,3 @@
-string name
-int64 age
+string raw_distance
+float64 distance
+int64 anchor_id

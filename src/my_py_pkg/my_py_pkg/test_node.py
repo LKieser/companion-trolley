@@ -13,8 +13,8 @@ class TestNode(Node):
 
     def publish_credentials(self):
         msg = UwbData()
-        msg.name = "Luke"
-        msg.age = 22
+        msg.raw_distance = "Luke"
+        msg.distance = 22
         self.pub.publish(msg)
 
 

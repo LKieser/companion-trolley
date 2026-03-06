@@ -30,12 +30,12 @@ class UwbDriverNode(Node):
             msg = UwbData()
             msg.raw_distance = line # parse this using the comma
             # Example line format: "3, 22.1" where 3 is anchor_id and 22.1 is distance
-            parts = line.split(',')
-            if len(parts) == 2:
-                msg.distance = float(parts[0].strip())
-                msg.anchor_id = int(parts[1].strip())
-            else:
-                self.get_logger().warn(f"Failed to parse UWB data: {line}")
+            # parts = line.split(',')
+            # if len(parts) == 2:
+            #     msg.distance = float(parts[0].strip())
+            #     msg.anchor_id = int(parts[1].strip())
+            # else:
+            #     self.get_logger().warn(f"Failed to parse UWB data: {line}")
 
             self.uwbDataPublisher.publish(msg)
         except Exception as e:

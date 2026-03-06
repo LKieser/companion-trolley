@@ -37,3 +37,9 @@ Built a swapfile. Check its use using
 ```
 free -h
 ```
+
+## Lidar
+To launch file for lidar run
+```
+ros2 launch ldlidar_stl_ros2 ld19.launch.py
+```

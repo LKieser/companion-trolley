@@ -25,3 +25,5 @@ compile_commands.json
 # OS junk
 .DS_Store
 Thumbs.db
+
+src/ldlidar_stl_ros2/

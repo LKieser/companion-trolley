@@ -27,4 +27,3 @@ compile_commands.json
 Thumbs.db
 
 ros2_ws/src/ldlidar_stl_ros2
-firmware/uwb_controller

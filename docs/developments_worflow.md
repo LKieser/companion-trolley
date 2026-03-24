@@ -37,6 +37,12 @@ Built a swapfile. Check its use using
 ```
 free -h
 ```
+To change the wifi run this command to get the config file and then apply it
+```
+sudo nano /etc/netplan/50-cloud-init.yaml
+sudo netplan apply
+```
+Then check if the wifi is connected using `ip a`
 
 ## Lidar
 To launch file for lidar run

@@ -16,12 +16,12 @@
 #define SPI_SCK 18
 #define SPI_MISO 19
 #define SPI_MOSI 23
-#define DW_CS 4
+#define DW_CS 21
 
 // connection pins
 const uint8_t PIN_RST = 27; // reset pin
 const uint8_t PIN_IRQ = 34; // irq pin
-const uint8_t PIN_SS = 4;   // spi select pin
+const uint8_t PIN_SS = 21;   // spi select pin
 
 // TAG antenna delay defaults to 16384
 // leftmost two bytes below will become the "short address"
@@ -35,8 +35,8 @@ char tag_addr[] = "7D:00:22:EA:82:60:3B:9C";
 
 float anchor_matrix[N_ANCHORS][3] = { //list of anchor coordinates, relative to chosen origin.
   {0.0, 0.0, 0.97},  //Anchor labeled #1
-  {3.99, 5.44, 1.14},//Anchor labeled #2
-  {3.71, -0.3, 0.6}, //Anchor labeled #3
+  {0.97, 0.381, 1.14},//Anchor labeled #2
+  {0.70, -0.15, 0.6}, //Anchor labeled #3
 };  //Z values are ignored in this code
 
 uint32_t last_anchor_update[N_ANCHORS] = {0}; //millis() value last time anchor was seen
@@ -44,6 +44,11 @@ float last_anchor_distance[N_ANCHORS] = {0.0}; //most recent distance reports
 
 float current_tag_position[2] = {0.0, 0.0}; //global current position (meters with respect to anchor origin)
 float current_distance_rmse = 0.0;  //rms error in distance calc => crude measure of position error (meters).  Needs to be better characterized
+
+void newRange();
+void newDevice(DW1000Device *device);
+void inactiveDevice(DW1000Device *device);
+int trilat2D_3A(void);
 
 void setup()
 {
@@ -61,6 +66,7 @@ void setup()
   // start as tag, do not assign random short address
 
   DW1000Ranging.startAsTag(tag_addr, DW1000.MODE_LONGDATA_RANGE_LOWPOWER, false);
+  Serial.print("Starting....\n");
 }
 
 void loop()
@@ -75,15 +81,15 @@ void newRange()
 {
   int i; //indices, expecting values 1 to 4
   //index of this anchor, expecting values 1,2,3
-  int index = DW1000Ranging.getDistantDevice()->getShortAddress() & 0x03; 
-  
+  int index = DW1000Ranging.getDistantDevice()->getShortAddress() & 0x03;
+
   if (index > 0) {
     last_anchor_update[index - 1] = millis();  //decrement for array index
     float range = DW1000Ranging.getDistantDevice()->getRange();
     last_anchor_distance[index-1] = range;
     if (range < 0.0 || range > 30.0)     last_anchor_update[index - 1] = 0;  //sanity check, ignore this measurement
   }
-  
+
   int detected = 0;
 
   //reject old measurements
@@ -93,6 +99,7 @@ void newRange()
   }
 
   if ( detected == 3) { //three measurements TODO: check millis() wrap
+
 
 #ifdef DEBUG_DIST
     // print distance and age of measurement
@@ -113,6 +120,8 @@ void newRange()
     Serial.print(current_tag_position[1]);
     Serial.write(',');
     Serial.println(current_distance_rmse);
+    byte location[] = {1};
+    DW1000Ranging.transmit(location);
   }
 }  //end newRange
 
@@ -134,7 +143,7 @@ int trilat2D_3A(void) {
   // https://www.th-luebeck.de/fileadmin/media_cosa/Dateien/Veroeffentlichungen/Sammlung/TR-2-2015-least-sqaures-with-ToA.pdf
   // S. James Remington 1/2022
   //
-  // A nice feature of this method is that the normal matrix depends only on the anchor arrangement 
+  // A nice feature of this method is that the normal matrix depends only on the anchor arrangement
   // and needs to be inverted only once. Hence, the position calculation should be robust.
   //
   static bool first = true;  //first time through, some preliminary work

@@ -7,9 +7,10 @@
 #include <SPI.h>
 #include "DW1000Ranging.h"
 #include "DW1000.h"
+#include "Esp_Now_for_Anchor.h"
 
 // leftmost two bytes below will become the "short address"
-char anchor_addr[] = "83:00:5B:D5:A9:9A:E2:9C"; //#3
+char anchor_addr[] = "81:00:5B:D5:A9:9A:E2:9C"; //#1
 
 //calibrated Antenna Delay setting for this anchor
 uint16_t Adelay = 16542;
@@ -56,7 +57,6 @@ void setup()
   DW1000Ranging.attachNewRange(newRange);
   DW1000Ranging.attachNewDevice(newDevice);
   DW1000Ranging.attachInactiveDevice(inactiveDevice);
-
   //start the module as an anchor, do not assign random short address
   DW1000Ranging.startAsAnchor(anchor_addr, DW1000.MODE_LONGDATA_RANGE_LOWPOWER, false);
   // DW1000Ranging.startAsAnchor(ANCHOR_ADD, DW1000.MODE_SHORTDATA_FAST_LOWPOWER);
@@ -64,6 +64,9 @@ void setup()
   // DW1000Ranging.startAsAnchor(ANCHOR_ADD, DW1000.MODE_SHORTDATA_FAST_ACCURACY);
   // DW1000Ranging.startAsAnchor(ANCHOR_ADD, DW1000.MODE_LONGDATA_FAST_ACCURACY);
   // DW1000Ranging.startAsAnchor(ANCHOR_ADD, DW1000.MODE_LONGDATA_RANGE_ACCURACY);
+
+  // initialize ESP-NOW for anchor
+  Esp_now_Anchor_init();
 }
 
 void loop()

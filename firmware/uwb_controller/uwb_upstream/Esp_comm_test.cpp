@@ -1,13 +1,10 @@
 #include <Arduino.h>
+#include "WiFi.h"
 
 void setup() {
   Serial.begin(115200);
-  delay(1000);
-  Serial.println("ESP32 CONNECTED");
-
-  Serial.printf("PSRAM detected: %s\n", psramFound() ? "YES" : "NO");
-  Serial.printf("Free heap: %u\n", ESP.getFreeHeap());
-  Serial.printf("Free PSRAM: %u\n", ESP.getFreePsram());
+  WiFi.mode(WIFI_MODE_STA);
+  Serial.println(WiFi.macAddress());
 }
 
 void loop() {}

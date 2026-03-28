@@ -120,8 +120,6 @@ void newRange()
     Serial.print(current_tag_position[1]);
     Serial.write(',');
     Serial.println(current_distance_rmse);
-    byte location[] = {1};
-    DW1000Ranging.transmit(location);
   }
 }  //end newRange
 

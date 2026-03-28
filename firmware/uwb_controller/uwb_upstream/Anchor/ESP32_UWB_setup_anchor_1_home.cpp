@@ -13,15 +13,13 @@
 char anchor_addr[] = "81:00:5B:D5:A9:9A:E2:9C"; //#1
 
 //calibrated Antenna Delay setting for this anchor
-uint16_t Adelay = 16542;
+uint16_t Adelay = 16573;
 
 // previously determined calibration results for antenna delay
-// #1 16600
-// #2 16600
-// #3 16600
+// Anchor #1: 16573
 
 // calibration distance
-float dist_m = (285 - 1.75) * 0.0254; //meters
+float dist_m = (300 - 1.75) * 0.0254; //meters
 
 #define SPI_SCK 18
 #define SPI_MISO 19
@@ -57,6 +55,10 @@ void setup()
   DW1000Ranging.attachNewRange(newRange);
   DW1000Ranging.attachNewDevice(newDevice);
   DW1000Ranging.attachInactiveDevice(inactiveDevice);
+
+  //Enable the filter to smooth the distance
+  // DW1000Ranging.useRangeFilter(true); // not great with trilateration
+
   //start the module as an anchor, do not assign random short address
   DW1000Ranging.startAsAnchor(anchor_addr, DW1000.MODE_LONGDATA_RANGE_LOWPOWER, false);
   // DW1000Ranging.startAsAnchor(ANCHOR_ADD, DW1000.MODE_SHORTDATA_FAST_LOWPOWER);
@@ -78,8 +80,8 @@ void newRange()
 {
   //    Serial.print("from: ");
   // Serial.print(DW1000Ranging.getDistantDevice()->getShortAddress(), HEX); // MY CHANGE
-  Serial.print(anchor_addr[1]); // MY CHANGE
-  Serial.print(", ");
+  // Serial.print(anchor_addr[1]); // MY CHANGE
+  Serial.print("Distance: ");
 
 #define NUMBER_OF_DISTANCES 1
   float dist = 0.0;

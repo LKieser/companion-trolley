@@ -9,18 +9,17 @@
 #include "DW1000.h"
 
 // leftmost two bytes below will become the "short address"
-char anchor_addr[] = "82:00:5B:D5:A9:9A:E2:9C"; //#3
+char anchor_addr[] = "83:00:5B:D5:A9:9A:E2:9C"; //#3
 
 //calibrated Antenna Delay setting for this anchor
-uint16_t Adelay = 16542;
+uint16_t Adelay = 16560;
 
 // previously determined calibration results for antenna delay
-// #1 16600
-// #2 16600
-// #3 16600
+// #2 16566
+// #3 16560
 
 // calibration distance
-float dist_m = (285 - 1.75) * 0.0254; //meters
+float dist_m = (300 - 1.75) * 0.0254; //meters
 
 #define SPI_SCK 18
 #define SPI_MISO 19
@@ -62,7 +61,7 @@ void setup()
   // DW1000Ranging.startAsAnchor(ANCHOR_ADD, DW1000.MODE_LONGDATA_FAST_LOWPOWER);
   // DW1000Ranging.startAsAnchor(ANCHOR_ADD, DW1000.MODE_SHORTDATA_FAST_ACCURACY);
   // DW1000Ranging.startAsAnchor(ANCHOR_ADD, DW1000.MODE_LONGDATA_FAST_ACCURACY);
-  // DW1000Ranging.startAsAnchor(ANCHOR_ADD, DW1000.MODE_LONGDATA_RANGE_ACCURACY);
+  // DW1000Ranging.startAsAnchor(anchor_addr, DW1000.MODE_LONGDATA_RANGE_ACCURACY, false);
 }
 
 void loop()

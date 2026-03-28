@@ -43,7 +43,7 @@ void setup()
   DW1000Ranging.startAsTag(tag_addr, DW1000.MODE_LONGDATA_RANGE_LOWPOWER, false);
 
   // setup esp now for sending data to the controller
-  Esp_now_Tag_init();
+  // Esp_now_Tag_init();
 }
 
 void loop()
@@ -57,10 +57,10 @@ void newRange()
   Serial.print(",");
   Serial.println(DW1000Ranging.getDistantDevice()->getRange());
   // send data to controller
-  float x = 1.111;
-  float y = 2.222;
-  float rmse = 0.123;
-  Esp_now_Tag_send_data(x, y, rmse);
+  // float x = 1.111;
+  // float y = 2.222;
+  // float rmse = 0.123;
+  // Esp_now_Tag_send_data(x, y, rmse);
 }
 
 void newDevice(DW1000Device *device)

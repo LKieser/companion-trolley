@@ -29,8 +29,8 @@ const uint8_t PIN_IRQ = 34; // irq pin
 const uint8_t PIN_SS = DW_CS;   // spi select pin
 
 
-char this_anchor_addr[] = "81:00:22:EA:82:60:3B:9C";
-float this_anchor_target_distance = 295*0.0254; //measured distance to anchor in m
+char this_anchor_addr[] = "83:00:22:EA:82:60:3B:9C";
+float this_anchor_target_distance = 300*0.0254; //measured distance to anchor in m
 
 uint16_t this_anchor_Adelay = 16500; //starting value
 uint16_t Adelay_delta = 100; //initial binary search step size

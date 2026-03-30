@@ -11,6 +11,7 @@
   <depend>trolley_interfaces</depend>
   <depend>sensor_msgs</depend>
   <depend>std_msgs</depend>
+  <depend>gemometry_msgs</depend>
 
   <test_depend>ament_copyright</test_depend>
   <test_depend>ament_flake8</test_depend>

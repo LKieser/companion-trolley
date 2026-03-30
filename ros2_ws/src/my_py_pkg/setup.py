@@ -25,7 +25,9 @@ setup(
     entry_points={
         'console_scripts': [
             "test_node = my_py_pkg.test_node:main",
-            "uwb_driver = my_py_pkg.uwb_driver:main"
+            "uwb_driver = my_py_pkg.uwb_driver:main",
+            "target_follower = my_py_pkg.target_follower:main",
+            "local_planner_tester = my_py_pkg.local_planner_tester:main"
         ],
     },
 )

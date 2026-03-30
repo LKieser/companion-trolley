@@ -1,3 +1,3 @@
-string raw_distance
-float64 distance
-int64 anchor_id
+float64 x
+float64 y
+float64 rmse

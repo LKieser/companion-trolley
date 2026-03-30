@@ -14,8 +14,9 @@ class TestNode(Node):
     def publish_credentials(self):
         msg = UwbData()
         msg.raw_distance = "Luke"
-        msg.distance = 22
+        msg.distance = 22.2
         self.pub.publish(msg)
+        self.get_logger().info("Credentials published")
 
 
 def main(args=None):

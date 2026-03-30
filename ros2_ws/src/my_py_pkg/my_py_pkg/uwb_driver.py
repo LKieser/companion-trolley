@@ -8,7 +8,7 @@ class UwbDriverNode(Node):
     def __init__(self):
         super().__init__('uwb_driver_node')
 
-        self.declare_parameter('port', '/dev/serial/by-id/usb-Silicon_Labs_CP2104_USB_to_UART_Bridge_Controller_02C552FA-if00-port0') # anchor 3
+        self.declare_parameter('port', '/dev/ttyAMA0') # anchor 1
         self.declare_parameter('baud', 115200)
 
         port = self.get_parameter('port').get_parameter_value().string_value
@@ -22,24 +22,21 @@ class UwbDriverNode(Node):
         self.timer = self.create_timer(0.01, self.read_serial)
 
     def read_serial(self):
-        try:
-            line = self.ser.readline().decode('utf-8', errors='ignore').strip()
-            if not line:
-                return
+        line = self.ser.readline().decode('utf-8', errors='ignore').strip()
+        if not line:
+            return
 
-            msg = UwbData()
-            msg.raw_distance = line # parse this using the comma
-            # Example line format: "3, 22.1" where 3 is anchor_id and 22.1 is distance
-            # parts = line.split(',')
-            # if len(parts) == 2:
-            #     msg.distance = float(parts[0].strip())
-            #     msg.anchor_id = int(parts[1].strip())
-            # else:
-            #     self.get_logger().warn(f"Failed to parse UWB data: {line}")
+        # split the serial data coming in as a string into individual floats
+        msg = UwbData()
+        parts = line.split(',')
+        if len(parts) == 3:
+            msg.x = float(parts[0].strip())
+            msg.y = float(parts[1].strip())
+            msg.rmse = float(parts[2].strip())
+        else:
+            self.get_logger().warn(f"Failed to parse UWB data: {line}")
 
-            self.uwbDataPublisher.publish(msg)
-        except Exception as e:
-            self.get_logger().warn(f"Serial read error: {e}")
+        self.uwbDataPublisher.publish(msg)
 
 
 def main(args=None):

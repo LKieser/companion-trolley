@@ -8,10 +8,16 @@ class LocalPlannerTesterNode(Node):
     def __init__(self):
         super().__init__("local_planner_tester")
         self.target_sub_ = self.create_subscription(PoseStamped, "goal", self.goal_callback, 10)
+        self.cmd_pub_ = self.create_publisher(PoseStamped, "cmd_vel", 10)
         self.get_logger().info("Local Planner Tester Node Initiated")
 
+    # send the cmd_vel message every time the goal is updated
     def goal_callback(self, msg: PoseStamped):
-        self.get_logger().info(f"Received goal: x={msg.pose.position.x}, y={msg.pose.position.y}, z={msg.pose.position.z}")
+        send_msg = PoseStamped()
+        send_msg.pose.position.x = msg.pose.position.x
+        send_msg.pose.position.y = msg.pose.position.y
+        send_msg.pose.position.z = 0.0
+        self.cmd_pub_.publish(send_msg)
 
 def main(args=None):
     rclpy.init(args=args)

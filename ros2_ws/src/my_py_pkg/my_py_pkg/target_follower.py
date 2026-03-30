@@ -13,16 +13,16 @@ class TargetFollowerNode(Node):
         self.pub_ = self.create_publisher(PoseStamped, "goal", 10)
         self.get_logger().info("Target Follower Node Initiated")
 
-    # Process the received UWB data
+    # Process the received UWB data, apply smoothing, and publish the smoothed position as a PoseStamped message
     def uwb_callback(self, msg: UwbData):
         # Use EWMA function to smooth the UWB data
         if msg.rmse > 1.0:  # If the RMSE is too high, ignore the data
             # self.get_logger().warn(f"High RMSE ({msg.rmse}), ignoring UWB data")
             return
+
         alpha = 0.5 # smoothing factor
         self.smoothed_x = alpha * msg.x + (1 - alpha) * self.smoothed_x
         self.smoothed_y = alpha * msg.y + (1 - alpha) * self.smoothed_y
-        # self.get_logger().info(f"Received UWB data: x={self.smoothed_x}, y={self.smoothed_y}, rmse={msg.rmse}")
 
         # publish smoothed data
         pose_msg = PoseStamped()

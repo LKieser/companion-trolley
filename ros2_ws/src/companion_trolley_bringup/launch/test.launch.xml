@@ -1,0 +1,4 @@
+<launch>
+    <!--list the package name and then the node executable name just like you would for a ros2 run command-->
+    <node pkg="my_py_pkg" exec="test_node" />
+</launch>

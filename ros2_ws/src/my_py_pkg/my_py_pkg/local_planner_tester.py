@@ -1,23 +1,66 @@
 #!/usr/bin/env python3
 import rclpy
 from rclpy.node import Node
-from geometry_msgs.msg import PoseStamped
+from geometry_msgs.msg import PoseStamped, Twist
+import math
 
 
 class LocalPlannerTesterNode(Node):
     def __init__(self):
         super().__init__("local_planner_tester")
         self.target_sub_ = self.create_subscription(PoseStamped, "goal", self.goal_callback, 10)
-        self.cmd_pub_ = self.create_publisher(PoseStamped, "cmd_vel", 10)
+        self.cmd_pub_ = self.create_publisher(Twist, "cmd_vel", 10)
         self.get_logger().info("Local Planner Tester Node Initiated")
+
+        self.last_changed_x = 0.0
+        self.last_changed_y = 0.0
 
     # send the cmd_vel message every time the goal is updated
     def goal_callback(self, msg: PoseStamped):
-        send_msg = PoseStamped()
-        send_msg.pose.position.x = msg.pose.position.x
-        send_msg.pose.position.y = msg.pose.position.y
-        send_msg.pose.position.z = 0.0
-        self.cmd_pub_.publish(send_msg)
+        # make sure change is significant enough
+        if abs(self.last_changed_x - msg.pose.position.x) < 0.3 or abs(self.last_changed_y - msg.pose.position.y) < 0.3: # *********maybe change this to an AND
+            return
+
+        self.last_changed_x = msg.pose.position.x
+        self.last_changed_y = msg.pose.position.y
+        # recieve the x,y back as the angular z and linear x
+        temp_x, temp_y = self.compute_cmd(self.last_changed_x, self.last_changed_y)
+        # publish the cmd_vel message
+        vel_msg = Twist()
+        vel_msg.linear.x = temp_x
+        vel_msg.angular.z = temp_y
+        self.cmd_pub_.publish(vel_msg)
+
+    def compute_cmd(self, x, y):
+        distance = math.sqrt(x*x + y*y)
+        angle_error = math.atan2(y, x)
+
+        # set follow distance
+        follow_distance = 1.0
+        distance_error = distance - follow_distance
+
+        # factors for proportional control
+        k_lin = 0.6
+        k_ang = 1.5
+        max_lin = 0.5
+        max_ang = 0.8
+
+        angular_z = k_ang * angle_error
+        linear_x = k_lin * distance_error
+
+        # stop moving forward if target is too far off to the side
+        if abs(angle_error) > 0.5:
+            linear_x = 0.0
+
+        # don't reverse for now during testing
+        if linear_x < 0.0:
+            linear_x = 0.0
+
+        # clamp outputs
+        angular_z = max(min(angular_z, max_ang), -max_ang)
+        linear_x = max(min(linear_x, max_lin), 0.0)
+
+        return linear_x, angular_z
 
 def main(args=None):
     rclpy.init(args=args)

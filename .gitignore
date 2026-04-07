@@ -6,6 +6,7 @@ log/
 # VS Code
 browse*
 *.code-workspace
+.vscode*
 
 # Python
 __pycache__/
@@ -25,5 +26,3 @@ compile_commands.json
 # OS junk
 .DS_Store
 Thumbs.db
-
-ros2_ws/src/ldlidar_stl_ros2

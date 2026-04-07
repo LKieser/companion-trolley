@@ -11,6 +11,7 @@
 
   <!--Use exec_depend to include all packages that will be getting called in the launch file-->
   <exec_depend>my_py_pkg</exec_depend>
+  <exec_depend>ldlidar_stl_ros2</exec_depend>
 
   <test_depend>ament_lint_auto</test_depend>
   <test_depend>ament_lint_common</test_depend>

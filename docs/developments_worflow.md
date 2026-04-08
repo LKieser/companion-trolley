@@ -44,8 +44,6 @@ sudo netplan apply
 ```
 Then check if the wifi is connected using `ip a`
 
-## Lidar
-To launch file for lidar run
-```
-ros2 launch ldlidar_stl_ros2 ld19.launch.py
-```
+## TF Tree
+- For directions remember: Forward, Left, Up = X, Y, Z
+  - This is also shown with the right hand rule where index finger points forward for X, middle points in for Y, and thumb points up for Z

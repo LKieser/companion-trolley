@@ -64,15 +64,14 @@
         </visual>
     </link>
 
-    <joint name="base_left_wheel_joint" type="continuous">
+    <joint name="base_left_wheel_joint" type="fixed">
         <parent link="base_link" />
         <child link="left_wheel" />
         <!-- Y value moves wheel to edge of robot -->
         <origin xyz="0 0.15 0" rpy="0 0 0" />
-        <axis xyz="0 1 0" />
     </joint>
 
-    <!-- Left Wheel -->
+    <!-- Right Wheel -->
     <link name="right_wheel">
         <visual>
             <geometry>
@@ -84,12 +83,11 @@
         </visual>
     </link>
 
-    <joint name="base_right_wheel_joint" type="continuous">
+    <joint name="base_right_wheel_joint" type="fixed">
         <parent link="base_link" />
         <child link="right_wheel" />
         <!-- Y value moves wheel to edge of robot -->
         <origin xyz="0 -0.15 0" rpy="0 0 0" />
-        <axis xyz="0 1 0" />
     </joint>
 
     <!-- Caster Wheel Front Right -->

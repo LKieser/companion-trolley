@@ -1,4 +1,6 @@
 <launch>
-    <!--list the package name and then the node executable name just like you would for a ros2 run command-->
+    <!-- Launch base_link -->
     <node pkg="robot_state_publisher" exec="robot_state_publisher" args="$(find-pkg-share companion_trolley_description)/urdf/companion_trolley.urdf" />
+    <!-- Launch LiDAR -->
+    <include file="$(find-pkg-share companion_trolley_bringup)/launch/lidar.launch.py" />
 </launch>

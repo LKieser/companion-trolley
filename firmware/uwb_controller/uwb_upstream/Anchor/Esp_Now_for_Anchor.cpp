@@ -23,12 +23,13 @@ struct_message myData;
 // callback function that will be executed when data is received
 void OnDataRecv(const uint8_t * mac, const uint8_t *incomingData, int len) {
   memcpy(&myData, incomingData, sizeof(myData));
-  Serial.print("x: ");
-  Serial.println(myData.x_dist);
-  Serial.print("y: ");
-  Serial.println(myData.y_dist);
-  Serial.print("rmse: ");
-  Serial.println(myData.rmse_dist);
+  // Serial.print("x: ");
+  // Serial.println(myData.x_dist);
+  // Serial.print("y: ");
+  // Serial.println(myData.y_dist);
+  // Serial.print("rmse: ");
+  // Serial.println(myData.rmse_dist);
+  Serial.printf("%f,%f,%f\n", myData.x_dist, myData.y_dist, myData.rmse_dist);
 }
 
 void Esp_now_Anchor_init() {

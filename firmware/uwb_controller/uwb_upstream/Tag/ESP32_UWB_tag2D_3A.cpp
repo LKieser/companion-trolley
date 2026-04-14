@@ -9,6 +9,7 @@
 #include <SPI.h>
 #include "DW1000Ranging.h"
 #include "DW1000.h"
+#include "Esp_Now_for_Tag.h"
 
 //#define DEBUG_TRILAT   //prints in trilateration code
 //#define DEBUG_DIST     //print anchor distances
@@ -34,9 +35,9 @@ char tag_addr[] = "7D:00:22:EA:82:60:3B:9C";
 // global variables, input and output
 
 float anchor_matrix[N_ANCHORS][3] = { //list of anchor coordinates, relative to chosen origin.
-  {0.0, 0.0, 0.97},  //Anchor labeled #1
-  {0.97, 0.381, 1.14},//Anchor labeled #2
-  {0.70, -0.15, 0.6}, //Anchor labeled #3
+  {0.0, 0.0, 0.00},  //Anchor labeled #1
+  {-0.13, 0.27, 0.43},//Anchor labeled #2
+  {0.12, 0.39, 0.27}, //Anchor labeled #3
 };  //Z values are ignored in this code
 
 uint32_t last_anchor_update[N_ANCHORS] = {0}; //millis() value last time anchor was seen
@@ -67,6 +68,9 @@ void setup()
 
   DW1000Ranging.startAsTag(tag_addr, DW1000.MODE_LONGDATA_RANGE_LOWPOWER, false);
   Serial.print("Starting....\n");
+
+  // setup esp now for sending data to the controller
+  Esp_now_Tag_init();
 }
 
 void loop()
@@ -120,6 +124,8 @@ void newRange()
     Serial.print(current_tag_position[1]);
     Serial.write(',');
     Serial.println(current_distance_rmse);
+    // send data to controller
+    Esp_now_Tag_send_data(current_tag_position[0], current_tag_position[1], current_distance_rmse);
   }
 }  //end newRange
 

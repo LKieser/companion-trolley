@@ -81,7 +81,7 @@ void newRange()
   //    Serial.print("from: ");
   // Serial.print(DW1000Ranging.getDistantDevice()->getShortAddress(), HEX); // MY CHANGE
   // Serial.print(anchor_addr[1]); // MY CHANGE
-  Serial.print("Distance: ");
+  // Serial.print("Distance: ");
 
 #define NUMBER_OF_DISTANCES 1
   float dist = 0.0;
@@ -89,7 +89,7 @@ void newRange()
     dist += DW1000Ranging.getDistantDevice()->getRange();
   }
   dist = dist/NUMBER_OF_DISTANCES;
-  Serial.println(dist);
+  // Serial.println(dist);
 }
 
 void newDevice(DW1000Device *device)

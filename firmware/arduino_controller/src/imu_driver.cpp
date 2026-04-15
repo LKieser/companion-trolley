@@ -8,70 +8,43 @@
 
 Adafruit_BNO055 bno = Adafruit_BNO055(55);
 
-float velX = 0;
-float velY = 0;
-float velZ = 0;
-
-unsigned long lastTime = 0;
+bool imu_ok = true;
 
 void setup_imu_driver() {
   if (!bno.begin()) {
-    Serial.println("BNO055 not detected!");
-    while (1);
+    imu_ok = false;
   }
 
-  delay(1000);
-
   bno.setExtCrystalUse(true);
-  lastTime = millis();
-  Serial.println("BNO055 Ready");
 }
 
-
-
 void read_imu() {
-  unsigned long currentTime = millis();
-  float dt = (currentTime - lastTime) / 1000.0;
-  lastTime = currentTime;
+    if (!imu_ok) {
+        Serial.println("DEBUG, BNO055 not detected!");
+        return;
+    }
 
-  // ORIENTATION (Euler)
+    imu::Quaternion quat = bno.getQuat();
+    imu::Vector<3> gyro = bno.getVector(Adafruit_BNO055::VECTOR_GYROSCOPE);
+    imu::Vector<3> accel = bno.getVector(Adafruit_BNO055::VECTOR_LINEARACCEL);
 
-  imu::Vector<3> euler = bno.getVector(Adafruit_BNO055::VECTOR_EULER);
+    Serial.print("IMU,");
 
-  float heading = euler.x();   // Compass Heading
-  float roll    = euler.z();
-  float pitch   = euler.y();
+    // Quaternion
+    Serial.print(quat.w(), 6); Serial.print(",");
+    Serial.print(quat.x(), 6); Serial.print(",");
+    Serial.print(quat.y(), 6); Serial.print(",");
+    Serial.print(quat.z(), 6); Serial.print(",");
 
-  // LINEAR ACCELERATION (gravity removed)
-  imu::Vector<3> accel = bno.getVector(Adafruit_BNO055::VECTOR_LINEARACCEL);
+    // Angular velocity
+    Serial.print(gyro.x(), 6); Serial.print(",");
+    Serial.print(gyro.y(), 6); Serial.print(",");
+    Serial.print(gyro.z(), 6); Serial.print(",");
 
-  float ax = accel.x();
-  float ay = accel.y();
-  float az = accel.z();
+    // Linear acceleration
+    Serial.print(accel.x(), 6); Serial.print(",");
+    Serial.print(accel.y(), 6); Serial.print(",");
+    Serial.print(accel.z(), 6);
 
-  // Integrate acceleration -> velocity
-  velX += ax * dt;
-  velY += ay * dt;
-  velZ += az * dt;
-
-  // Print Data
-  Serial.print("Heading: ");
-  Serial.print(heading);
-
-  Serial.print("  Pitch: ");
-  Serial.print(pitch);
-
-  Serial.print("  Roll: ");
-  Serial.print(roll);
-
-  Serial.print("  | Vel X: ");
-  Serial.print(velX);
-
-  Serial.print("  Vel Y: ");
-  Serial.print(velY);
-
-  Serial.print("  Vel Z: ");
-  Serial.println(velZ);
-
-  delay(200);
+    Serial.println();  // end of line
 }

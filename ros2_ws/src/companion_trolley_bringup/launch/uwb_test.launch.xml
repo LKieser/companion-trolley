@@ -1,0 +1,7 @@
+<launch>
+    <!--list the package name and then the node executable name just like you would for a ros2 run command-->
+    <node pkg="my_py_pkg" exec="uwb_driver" />
+    <node pkg="my_py_pkg" exec="target_follower" />
+    <node pkg="my_py_pkg" exec="local_planner_tester" />
+    <node pkg="my_py_pkg" exec="arduino_serial_manager" />
+</launch>

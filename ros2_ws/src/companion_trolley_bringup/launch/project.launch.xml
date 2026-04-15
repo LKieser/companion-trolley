@@ -3,4 +3,6 @@
     <node pkg="robot_state_publisher" exec="robot_state_publisher" args="$(find-pkg-share companion_trolley_description)/urdf/companion_trolley.urdf" />
     <!-- Launch LiDAR -->
     <include file="$(find-pkg-share companion_trolley_bringup)/launch/lidar.launch.py" />
+    <!-- Launch Arduino Serial Manager-->
+    <node pkg="my_py_pkg" exec="arduino_serial_manager" />
 </launch>

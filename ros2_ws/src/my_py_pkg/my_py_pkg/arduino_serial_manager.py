@@ -1,36 +1,25 @@
 #!/usr/bin/env python3
 import rclpy
 from rclpy.node import Node
-from geometry_msgs.msg import PoseStamped
+from std_msgs.msg import Header
+from sensor_msgs.msg import Imu
 import serial, time
 
 class ArduinoSerialManagerNode(Node):
     def __init__(self):
         super().__init__("arduino_serial_manager")
-        self.target_sub_ = self.create_subscription(PoseStamped, "goal", self.goal_callback, 10)
-        self.x = 0.0
-        self.y = 0.0
 
         # serial line setup
-        self.declare_parameter('port', '/dev/ttyACM0') # mega
-        self.declare_parameter('baud', 115200)
-
-        port = self.get_parameter('port').get_parameter_value().string_value
-        baud = self.get_parameter('baud').get_parameter_value().integer_value
-
-        self.ser = serial.Serial(port, baud, timeout=0.01)
+        self.ser = serial.Serial('/dev/ttyACM0', 115200, timeout=0.01)
         time.sleep(2) # wait for serial to initialize on arduino
+        self.timer = self.create_timer(0.01, self.read_serial) # check for incoming serial data
+
+        # publisher for IMU
+        self.imu_pub_ = self.create_publisher(Imu, '/imu/data', 10)
 
         self.get_logger().info("Arduino Serial Manager Node Initiated")
 
-        self.timer = self.create_timer(0.01, self.read_serial) # check for incoming serial data
-
-    # recieve the goal position
-    def goal_callback(self, msg: PoseStamped):
-        self.x = msg.pose.position.x
-        self.y = msg.pose.position.y
-        self.send_serial()
-
+    # example sending serial mode
     def send_serial(self):
         # send the x and y position as a comma separated string over serial to the arduino
         serial_data = f"{self.x},{self.y}\n"
@@ -48,13 +37,43 @@ class ArduinoSerialManagerNode(Node):
 
         # split the serial data coming in as a string into individual floats
         parts = line.split(',')
-        if len(parts) == 2:
-            test_x = float(parts[0].strip())
-            test_y = float(parts[1].strip())
-            self.get_logger().info(f"Received serial data: x={test_x}, y={test_y}")
+
+        # Check first word for type of data and operate accordingly
+        if parts[0].strip() == "DEBUG":
+            for items in parts[1:]:
+                self.get_logger().info(items)
+        elif parts[0].strip() == "IMU":
+            if len(parts[1:]) == 10:     # 10 is the expected number of parts needed from the IMU
+                self.publish_imu_data(parts[1:])
+            else:
+                self.get_logger().warn(f"Not all field filled in IMU line: {line}")
         else:
             self.get_logger().warn(f"Failed to parse data: {line}")
 
+    def publish_imu_data(self, imu_data):
+        msg = Imu()
+
+        msg.header = Header()
+        msg.header.stamp = self.get_clock().now().to_msg()
+        msg.header.frame_id = 'imu_link'
+
+        # Orientation (quaternion)
+        msg.orientation.w = float(imu_data[0].strip())
+        msg.orientation.x = float(imu_data[1].strip())
+        msg.orientation.y = float(imu_data[2].strip())
+        msg.orientation.z = float(imu_data[3].strip())
+
+        # Angular velocity (rad/s)
+        msg.angular_velocity.x = float(imu_data[4].strip())
+        msg.angular_velocity.y = float(imu_data[5].strip())
+        msg.angular_velocity.z = float(imu_data[6].strip())
+
+        # Linear acceleration (m/s^2)
+        msg.linear_acceleration.x = float(imu_data[7].strip())
+        msg.linear_acceleration.y = float(imu_data[8].strip())
+        msg.linear_acceleration.z = float(imu_data[9].strip())
+
+        self.imu_pub_.publish(msg)
 
 
 def main(args=None):

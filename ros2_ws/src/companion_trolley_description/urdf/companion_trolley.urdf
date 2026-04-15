@@ -35,7 +35,7 @@
     </link>
 
     <!-- LiDAR -->
-    <link name="lidar">
+    <link name="lidar_link">
         <visual>
             <geometry>
                 <cylinder radius="0.02" length="0.035" />
@@ -47,13 +47,13 @@
 
     <joint name="base_lidar_joint" type="fixed">
         <parent link="base_link" />
-        <child link="lidar" />
+        <child link="lidar_link" />
         <!-- Origin for lidar set 165cm off ground and the x is half the box x value minus the distance the lidar is from the back-->
         <origin xyz="-0.1415 0 0.165" rpy="0 0 0" />
     </joint>
 
     <!-- IMU -->
-    <link name="IMU">
+    <link name="imu_link">
         <visual>
             <geometry>
                 <box size=".02 .025 .001" />
@@ -65,7 +65,7 @@
 
     <joint name="base_IMU_joint" type="fixed">
         <parent link="base_link" />
-        <child link="IMU" />
+        <child link="imu_link" />
         <origin xyz="0.1765 0.01 0.05" rpy="0 0 0" />
     </joint>
 

@@ -31,7 +31,7 @@ def generate_launch_description():
       parameters=[
         {'product_name': 'LDLiDAR_LD19'},
         {'topic_name': 'scan'},
-        {'frame_id': 'lidar'},
+        {'frame_id': 'lidar_link'},
         {'port_name': '/dev/serial/by-id/usb-Silicon_Labs_CP2102_USB_to_UART_Bridge_Controller_0001-if00-port0'},
         {'port_baudrate': 230400},
         {'laser_scan_dir': True},

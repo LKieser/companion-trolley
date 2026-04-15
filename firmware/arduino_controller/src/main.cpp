@@ -1,14 +1,16 @@
 #include <Arduino.h>
 #include "sonar_driver.h"
 #include "pi_bridge.h"
+#include "imu_driver.h"
 
 void setup() {
-  // initSonar();
   Serial.begin(115200);
-  Serial.setTimeout(20); // this is for the readStringUntil() function to stop it from blocking the full 1000ms when waiting for a message
+  delay(1000); // needed for IMU to fully initialize
+  setup_pi_bridge();
+  setup_imu_driver();
 }
 
 void loop() {
   read_message_from_pi();
-  // readSonar();
+  read_imu();
 }

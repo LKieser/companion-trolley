@@ -36,8 +36,8 @@ char tag_addr[] = "7D:00:22:EA:82:60:3B:9C";
 
 float anchor_matrix[N_ANCHORS][3] = { //list of anchor coordinates, relative to chosen origin.
   {0.0, 0.0, 0.00},  //Anchor labeled #1
-  {-0.13, 0.27, 0.43},//Anchor labeled #2
-  {0.12, 0.39, 0.27}, //Anchor labeled #3
+  {0.425, -0.20, 0.305},//Anchor labeled #2
+  {0.425, 0.22, -0.265}, //Anchor labeled #3
 };  //Z values are ignored in this code
 
 uint32_t last_anchor_update[N_ANCHORS] = {0}; //millis() value last time anchor was seen

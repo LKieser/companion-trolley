@@ -19,17 +19,17 @@
         <parent link="base_footprint" />
         <child link="base_link" />
         <!-- the z value is the radius of the wheel-->
-        <origin xyz="0 0 0.05" rpy="0 0 0" />
+        <origin xyz="0 0 0.09" rpy="0 0 0" />
     </joint>
 
     <link name="base_link">
         <visual>
             <geometry>
                 <!-- size=" x,  y,   z" in meters-->
-                <box size="0.4 0.25 0.5" />
+                <box size="0.443 0.40 0.86" />
             </geometry>
             <!-- origin tells the robot to move xyz or roll, pitch, yaw (in radians)-->
-            <origin xyz="0 0 0.25" rpy="0 0 0" />
+            <origin xyz="0 0 0.43" rpy="0 0 0" />
             <material name="green" />
         </visual>
     </link>
@@ -48,15 +48,32 @@
     <joint name="base_lidar_joint" type="fixed">
         <parent link="base_link" />
         <child link="lidar" />
-        <!-- Origin for lidar set 10cm off ground and half the box x value minus the radius of the lidar-->
-        <origin xyz="0.18 0 0.1" rpy="0 0 0" />
+        <!-- Origin for lidar set 165cm off ground and the x is half the box x value minus the distance the lidar is from the back-->
+        <origin xyz="-0.1415 0 0.165" rpy="0 0 0" />
+    </joint>
+
+    <!-- IMU -->
+    <link name="IMU">
+        <visual>
+            <geometry>
+                <box size=".02 .025 .001" />
+            </geometry>
+            <origin xyz="0 0 0" rpy="0 0 0" />
+            <material name="white" />
+        </visual>
+    </link>
+
+    <joint name="base_IMU_joint" type="fixed">
+        <parent link="base_link" />
+        <child link="IMU" />
+        <origin xyz="0.1765 0.01 0.05" rpy="0 0 0" />
     </joint>
 
     <!-- Left Wheel -->
         <link name="left_wheel">
         <visual>
             <geometry>
-                <cylinder radius="0.05" length="0.05" />
+                <cylinder radius="0.09" length="0.035" />
             </geometry>
             <!-- x is changed 90 degrees in radians to fix shape of wheel-->
             <origin xyz="0 0 0" rpy="1.57 0 0" />
@@ -68,14 +85,14 @@
         <parent link="base_link" />
         <child link="left_wheel" />
         <!-- Y value moves wheel to edge of robot -->
-        <origin xyz="0 0.15 0" rpy="0 0 0" />
+        <origin xyz="0 0.2175 0" rpy="0 0 0" />
     </joint>
 
     <!-- Right Wheel -->
     <link name="right_wheel">
         <visual>
             <geometry>
-                <cylinder radius="0.05" length="0.05" />
+                <cylinder radius="0.09" length="0.035" />
             </geometry>
             <!-- x is changed 90 degrees in radians to fix shape of wheel-->
             <origin xyz="0 0 0" rpy="1.57 0 0" />
@@ -87,7 +104,7 @@
         <parent link="base_link" />
         <child link="right_wheel" />
         <!-- Y value moves wheel to edge of robot -->
-        <origin xyz="0 -0.15 0" rpy="0 0 0" />
+        <origin xyz="0 -0.2175 0" rpy="0 0 0" />
     </joint>
 
     <!-- Caster Wheel Front Right -->
@@ -95,7 +112,7 @@
         <visual>
             <geometry>
                 <!-- Radius is half the radius of the wheel -->
-                <sphere radius="0.025" />
+                <sphere radius="0.045" />
             </geometry>
             <origin xyz="0 0 0" rpy="0 0 0"/>
             <material name="white" />
@@ -105,7 +122,7 @@
     <joint name="base_caster_wheel_FR_joint" type="fixed">
         <parent link="base_link" />
         <child link="caster_wheel_FR" />
-        <origin xyz="0.175 0.1 -0.025" rpy="0 0 0" />
+        <origin xyz="0.1765 -0.155 -0.045" rpy="0 0 0" />
     </joint>
 
     <!-- Caster Wheel Front Left -->
@@ -113,7 +130,7 @@
         <visual>
             <geometry>
                 <!-- Radius is half the radius of the wheel -->
-                <sphere radius="0.025" />
+                <sphere radius="0.045" />
             </geometry>
             <origin xyz="0 0 0" rpy="0 0 0"/>
             <material name="white" />
@@ -123,7 +140,7 @@
     <joint name="base_caster_wheel_FL_joint" type="fixed">
         <parent link="base_link" />
         <child link="caster_wheel_FL" />
-        <origin xyz="0.175 -0.1 -0.025" rpy="0 0 0" />
+        <origin xyz="0.1765 0.155 -0.045" rpy="0 0 0" />
     </joint>
 
     <!-- Caster Wheel Back Right -->
@@ -131,7 +148,7 @@
         <visual>
             <geometry>
                 <!-- Radius is half the radius of the wheel -->
-                <sphere radius="0.025" />
+                <sphere radius="0.045" />
             </geometry>
             <origin xyz="0 0 0" rpy="0 0 0"/>
             <material name="white" />
@@ -141,7 +158,7 @@
     <joint name="base_caster_wheel_BR_joint" type="fixed">
         <parent link="base_link" />
         <child link="caster_wheel_BR" />
-        <origin xyz="-0.175 0.1 -0.025" rpy="0 0 0" />
+        <origin xyz="-0.1765 -0.155 -0.045" rpy="0 0 0" />
     </joint>
 
     <!-- Caster Wheel Back Left -->
@@ -149,7 +166,7 @@
         <visual>
             <geometry>
                 <!-- Radius is half the radius of the wheel -->
-                <sphere radius="0.025" />
+                <sphere radius="0.045" />
             </geometry>
             <origin xyz="0 0 0" rpy="0 0 0"/>
             <material name="white" />
@@ -159,6 +176,6 @@
     <joint name="base_caster_wheel_BL_joint" type="fixed">
         <parent link="base_link" />
         <child link="caster_wheel_BL" />
-        <origin xyz="-0.175 -0.1 -0.025" rpy="0 0 0" />
+        <origin xyz="-0.1765 0.155 -0.045" rpy="0 0 0" />
     </joint>
 </robot>

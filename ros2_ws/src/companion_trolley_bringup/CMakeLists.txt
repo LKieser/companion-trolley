@@ -10,9 +10,10 @@ find_package(ament_cmake REQUIRED)
 
 # add this code for the launch and then the config file
 install(
-  DIRECTORY 
+  DIRECTORY
   rviz
-  launch # config # add this in if there is a config file
+  config
+  launch
   DESTINATION share/${PROJECT_NAME}/
 )
 

@@ -5,4 +5,17 @@
     <include file="$(find-pkg-share companion_trolley_bringup)/launch/lidar.launch.py" />
     <!-- Launch Arduino Serial Manager-->
     <node pkg="my_py_pkg" exec="arduino_serial_manager" />
+    <!-- Launch Robot_localization for odom to base_link-->
+    <node
+    pkg="robot_localization"
+    exec="ekf_node"
+    name="ekf_filter_node"
+    output="screen">
+    <param from="$(find-pkg-share companion_trolley_bringup)/config/robot_localization.yaml" />
+    </node>
+    <!-- Launch UWB -->
+    <node pkg="my_py_pkg" exec="uwb_driver" />
+    <node pkg="my_py_pkg" exec="target_follower" />
+    <!-- Launch temporary target follower -->
+    <node pkg="my_py_pkg" exec="local_planner_tester" />
 </launch>

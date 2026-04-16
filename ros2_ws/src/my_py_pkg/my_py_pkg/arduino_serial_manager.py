@@ -51,6 +51,10 @@ class ArduinoSerialManagerNode(Node):
             self.get_logger().warn(f"Failed to parse data: {line}")
 
     def publish_imu_data(self, imu_data):
+        if len(imu_data) < 10:
+            self.get_logger().warn(f"IMU data too short: {imu_data}")
+            return
+
         msg = Imu()
 
         msg.header = Header()

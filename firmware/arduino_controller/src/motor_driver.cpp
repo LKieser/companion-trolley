@@ -15,7 +15,10 @@
 #define R_REN  12
 #define R_LEN  13
 
-const int MAX_PWM = 100; // max motor can handle is 191 = 18v
+// PWM of 0=0V, 255=24V
+// PWM of 191 = 2.69 m/s
+
+const int MAX_PWM = 191; // PWM of 191 = 18v
 const int RAMP_STEP = 3;
 
 // Soft start tracking

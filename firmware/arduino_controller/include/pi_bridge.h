@@ -1,2 +1,2 @@
 void setup_pi_bridge();
-void read_message_from_pi();
+void read_message_from_pi(int* left_drive, int* right_drive);

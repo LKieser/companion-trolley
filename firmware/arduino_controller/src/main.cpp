@@ -25,7 +25,7 @@ int right_drive = 0;
 bool button_pressed = false;
 
 // state
-int mode = JOYSTICK_MODE;
+int mode = AUTONMOUS_MODE;
 
 void setup() {
   Serial.begin(115200);
@@ -51,12 +51,25 @@ void loop() {
       }
       // Serial.println(mode);
     }
-
+    // Motor operation
     if (now - lastMotorRun >= motorPeriod) {
       lastMotorRun = now;
-      // read_joystick_drive(&left_drive, &right_drive);
+      switch (mode) {
+        case JOYSTICK_MODE:
+          read_joystick_drive(&left_drive, &right_drive);
+          break;
+        case AUTONMOUS_MODE:
+          read_message_from_pi(&left_drive, &right_drive);
+          break;
+      }
+      // pwm messages for pi
+      Serial.print("VERBOSE,");
+      Serial.print(left_drive);
+      Serial.print(",");
+      Serial.println(right_drive);
+
       run_motors(left_drive, right_drive);
     }
 
-    read_message_from_pi();
+
 }

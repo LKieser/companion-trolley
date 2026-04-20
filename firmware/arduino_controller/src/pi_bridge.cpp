@@ -3,7 +3,8 @@
 
 #define WHEEL_BASE 0.43
 // max with 18V is 2.69 m/s. After load assuming only 75% efficiency: 2.69 * 0.75 = 2.02 m/s
-#define MAX_SPEED 2.02
+// 0.56 equates with 50 PWM for testing
+#define MAX_SPEED 0.56
 
 void convert_to_pwm(float linear_x, float angular_z, int* left_drive, int* right_drive);
 
@@ -51,4 +52,8 @@ void convert_to_pwm(float linear_x, float angular_z, int* left_drive, int* right
     // map the velocity to the correct PWM value
     *left_drive  = (int)((left_velocity / MAX_SPEED) * MAX_PWM);
     *right_drive = (int)((right_velocity / MAX_SPEED) * MAX_PWM);
+
+    // motor reads these commands backwards from what is sent
+    *left_drive *= -1;
+    *right_drive *= -1;
 }

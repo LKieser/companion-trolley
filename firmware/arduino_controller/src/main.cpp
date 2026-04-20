@@ -12,10 +12,12 @@
 unsigned long lastImuRead = 0;
 unsigned long lastMotorRun = 0;
 unsigned long lastButtonCheck = 0;
+unsigned long lastSafetyStop = 0;
 
 const unsigned long imuPeriod  = 20;  // ms delay
 const unsigned long motorPeriod = 20; // ms delay
 const unsigned long buttonPeriod = 50;
+const unsigned long safetyPeriod = 3000;
 
 // motor control
 int left_drive = 0;
@@ -62,12 +64,17 @@ void loop() {
           read_message_from_pi(&left_drive, &right_drive);
           break;
       }
+
+      // if (now - lastSafetyStop >= safetyPeriod) {
+      //   lastSafetyStop = now;
+      //   delay(2000);
+      // }
+
       // pwm messages for pi
       Serial.print("VERBOSE,");
       Serial.print(left_drive);
       Serial.print(",");
       Serial.println(right_drive);
-
       run_motors(left_drive, right_drive);
     }
 

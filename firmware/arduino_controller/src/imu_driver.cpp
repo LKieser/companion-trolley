@@ -28,23 +28,23 @@ void read_imu() {
     imu::Vector<3> gyro = bno.getVector(Adafruit_BNO055::VECTOR_GYROSCOPE);
     imu::Vector<3> accel = bno.getVector(Adafruit_BNO055::VECTOR_LINEARACCEL);
 
-    // Serial.print("IMU,");
+    Serial.print("IMU,");
 
-    // // Heading
-    // Serial.print(quat.w(), 6); Serial.print(",");
-    // Serial.print(quat.x(), 6); Serial.print(",");
-    // Serial.print(quat.y(), 6); Serial.print(",");
-    // Serial.print(quat.z(), 6); Serial.print(",");
+    // Heading
+    Serial.print(quat.w(), 6); Serial.print(",");
+    Serial.print(quat.x(), 6); Serial.print(",");
+    Serial.print(quat.y(), 6); Serial.print(",");
+    Serial.print(quat.z(), 6); Serial.print(",");
 
-    // // Angular velocity
-    // Serial.print(gyro.x(), 6); Serial.print(",");
-    // Serial.print(gyro.y(), 6); Serial.print(",");
-    // Serial.print(gyro.z(), 6); Serial.print(",");
+    // Angular velocity
+    Serial.print(gyro.x(), 6); Serial.print(",");
+    Serial.print(gyro.y(), 6); Serial.print(",");
+    Serial.print(gyro.z(), 6); Serial.print(",");
 
-    // // Linear acceleration
-    // Serial.print(accel.x(), 6); Serial.print(",");
-    // Serial.print(accel.y(), 6); Serial.print(",");
-    // Serial.print(accel.z(), 6);
+    // Linear acceleration
+    Serial.print(accel.x(), 6); Serial.print(",");
+    Serial.print(accel.y(), 6); Serial.print(",");
+    Serial.print(accel.z(), 6);
 
-    // Serial.println();  // end of line
+    Serial.println();  // end of line
 }

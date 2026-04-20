@@ -17,9 +17,11 @@
 
 // PWM of 0=0V, 255=24V
 // PWM of 191 = 2.69 m/s
+// Calculate with RPM * 0.56(wheel sircumferance) / 60 sec
 
-const int MAX_PWM = 191; // PWM of 191 = 18v
-const int RAMP_STEP = 3;
+const int MAX_PWM = 50; // PWM of 191 = 18v = 2.69 m/s || PWM of 50 ~ 0.75 m/s
+const int MIN_PWM = 10; // Lowest PWM before stall current
+const int RAMP_STEP = 2;
 
 // Soft start tracking
 int currentLeftPWM = 0;
@@ -39,7 +41,15 @@ int rampPWM(int current, int target) {
 
 // Motor control
 void setMotor(int rpwm, int lpwm, int speedVal) {
+  // add limits to PWM
   speedVal = constrain(speedVal, -MAX_PWM, MAX_PWM);
+  // avoid stall currrent deadzone between 10 and -10
+  if (speedVal > 0 && speedVal < MIN_PWM) {
+    speedVal = MIN_PWM;
+  }
+  if (speedVal < 0 && speedVal > -MIN_PWM) {
+    speedVal = -MIN_PWM;
+  }
 
   if (speedVal > 0) {
     analogWrite(rpwm, speedVal);

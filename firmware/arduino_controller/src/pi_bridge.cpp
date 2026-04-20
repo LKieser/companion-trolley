@@ -6,6 +6,11 @@
 // 0.56 equates with 50 PWM for testing
 #define MAX_SPEED 0.56
 
+// timeout function
+unsigned long lastCmdVel = 0;
+const unsigned long timeoutPeriod = 1000;
+
+
 void convert_to_pwm(float linear_x, float angular_z, int* left_drive, int* right_drive);
 
 void setup_pi_bridge() {
@@ -13,6 +18,7 @@ void setup_pi_bridge() {
 }
 
 void read_message_from_pi(int* left_drive, int* right_drive) {
+    unsigned long now = millis();
     if (Serial.available() > 0) {
         String input = Serial.readStringUntil('\n');
         input.trim();
@@ -25,6 +31,7 @@ void read_message_from_pi(int* left_drive, int* right_drive) {
         String header = input.substring(0, index_one); // grabs the substring from position 1 to 1 before the comma position
 
         if (header == "CMD_VEL") {
+            lastCmdVel = now;
             int index_two = input.indexOf(',', index_one + 1); // starts at one spot ahead of the last index and looks for next comma
 
             // Extract the two floats
@@ -32,6 +39,11 @@ void read_message_from_pi(int* left_drive, int* right_drive) {
             float angular_z = input.substring(index_two + 1).toFloat();
             convert_to_pwm(linear_x, angular_z, left_drive, right_drive);
         }
+    }
+    // timeout watchdog to stop the motors after 1 second of no new commands
+    if (now - lastCmdVel >= timeoutPeriod) {
+        *left_drive = 0;
+        *right_drive = 0;
     }
 }
 

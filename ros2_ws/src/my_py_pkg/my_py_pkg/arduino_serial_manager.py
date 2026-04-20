@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 import rclpy
 from rclpy.node import Node
-from std_msgs.msg import Header
+from std_msgs.msg import Header, String
 from sensor_msgs.msg import Imu
+from geometry_msgs.msg import Twist
 import serial, time
 
 class ArduinoSerialManagerNode(Node):
@@ -17,12 +18,20 @@ class ArduinoSerialManagerNode(Node):
         # publisher for IMU
         self.imu_pub_ = self.create_publisher(Imu, '/imu/data', 10)
 
+        # publisher for VERBOSE
+        self.verbose_pub_ = self.create_publisher(String, '/verbose', 10)
+
+        # subscriber to cmd_vel
+        self.cmd_vel_sub_ = self.create_subscription(Twist, '/cmd_vel', self.send_cmd_vel_callback, 10)
+
         self.get_logger().info("Arduino Serial Manager Node Initiated")
 
     # example sending serial mode
-    def send_serial(self):
+    def send_cmd_vel_callback(self, vel_msg: Twist):
+        linear_x = vel_msg.linear.x
+        angular_z = vel_msg.angular.z
         # send the x and y position as a comma separated string over serial to the arduino
-        serial_data = f"{self.x},{self.y}\n"
+        serial_data = f"CMD_VEL, {linear_x},{angular_z}\n"
         self.ser.write(serial_data.encode('utf-8'))
 
     def read_serial(self):
@@ -39,9 +48,17 @@ class ArduinoSerialManagerNode(Node):
         parts = line.split(',')
 
         # Check first word for type of data and operate accordingly
+        # Print debug immediatly if something happens
         if parts[0].strip() == "DEBUG":
             for items in parts[1:]:
                 self.get_logger().info(items)
+        # print extra helpful verbose data into a topic
+        elif parts[0].strip() == "VERBOSE":
+            pwm_string = ','.join(parts[1:])
+            verb_msg = String()
+            verb_msg.data = f"PWM: LEFT, RIGHT: {pwm_string}"
+            verb_msg.data
+            self.verbose_pub_.publish(verb_msg)
         elif parts[0].strip() == "IMU":
             if len(parts[1:]) == 10:     # 10 is the expected number of parts needed from the IMU
                 self.publish_imu_data(parts[1:])
@@ -78,6 +95,7 @@ class ArduinoSerialManagerNode(Node):
         msg.linear_acceleration.z = float(imu_data[9].strip())
 
         self.imu_pub_.publish(msg)
+
 
 
 def main(args=None):

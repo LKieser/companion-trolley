@@ -3,6 +3,7 @@ import rclpy
 from rclpy.node import Node
 from trolley_interfaces.msg import UwbData
 import serial
+import re
 
 class UwbDriverNode(Node):
     def __init__(self):
@@ -30,9 +31,13 @@ class UwbDriverNode(Node):
         msg = UwbData()
         parts = line.split(',')
         if len(parts) == 3:
-            msg.x = float(parts[0].strip())
-            msg.y = float(parts[1].strip())
-            msg.rmse = float(parts[2].strip())
+            # get rid of everything that is not 0-9, period, or minus
+            clean_x = re.sub(r'[^0-9\.\-]', '', parts[0]).strip()
+            msg.x = float(clean_x)
+            clean_y = re.sub(r'[^0-9\.\-]', '', parts[1]).strip()
+            msg.y = float(clean_y)
+            clean_rmse = re.sub(r'[^0-9\.\-]', '', parts[2]).strip()
+            msg.rmse = float(clean_rmse)
         else:
             self.get_logger().warn(f"Failed to parse UWB data: {line}")
 

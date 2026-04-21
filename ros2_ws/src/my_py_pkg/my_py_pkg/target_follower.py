@@ -10,7 +10,7 @@ class TargetFollowerNode(Node):
         self.smoothed_x = 0
         self.smoothed_y = 0
         self.sub_ = self.create_subscription(UwbData, "uwb/data", self.uwb_callback, 10)
-        self.pub_ = self.create_publisher(PoseStamped, "Jonny_Boy", 10)
+        self.pub_ = self.create_publisher(PoseStamped, "goal", 10)
         self.get_logger().info("Target Follower Node Initiated")
 
     # Process the received UWB data, apply smoothing, and publish the smoothed position as a PoseStamped message

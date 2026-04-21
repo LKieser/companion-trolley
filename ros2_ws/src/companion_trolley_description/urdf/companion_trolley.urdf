@@ -69,6 +69,23 @@
         <origin xyz="0.1765 0.01 0.05" rpy="0 0 0" />
     </joint>
 
+    <!-- UWB Anchor #1 -->
+    <link name="uwb_link">
+        <visual>
+            <geometry>
+                <box size=".015 .08 .035" />
+            </geometry>
+            <origin xyz="0 0 0" rpy="0 0 0" />
+            <material name="white" />
+        </visual>
+    </link>
+
+    <joint name="base_UWB_joint" type="fixed">
+        <parent link="base_link" />
+        <child link="uwb_link" />
+        <origin xyz="-0.229 -0.01 0.455" rpy="0 0 0" />
+    </joint>
+
     <!-- Left Wheel -->
         <link name="left_wheel">
         <visual>

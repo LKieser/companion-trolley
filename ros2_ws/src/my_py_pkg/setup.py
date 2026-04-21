@@ -28,7 +28,8 @@ setup(
             "uwb_driver = my_py_pkg.uwb_driver:main",
             "target_follower = my_py_pkg.target_follower:main",
             "local_planner_tester = my_py_pkg.local_planner_tester:main",
-            "arduino_serial_manager = my_py_pkg.arduino_serial_manager:main"
+            "arduino_serial_manager = my_py_pkg.arduino_serial_manager:main",
+            "cmd_vel_smoothed_forward = my_py_pkg.cmd_vel_smoothed_forward:main"
         ],
     },
 )

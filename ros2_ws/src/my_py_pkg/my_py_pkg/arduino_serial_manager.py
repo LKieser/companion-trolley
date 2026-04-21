@@ -5,6 +5,7 @@ from std_msgs.msg import Header, String
 from sensor_msgs.msg import Imu
 from geometry_msgs.msg import Twist
 import serial, time
+import re
 
 class ArduinoSerialManagerNode(Node):
     def __init__(self):
@@ -17,6 +18,7 @@ class ArduinoSerialManagerNode(Node):
 
         # publisher for IMU
         self.imu_pub_ = self.create_publisher(Imu, '/imu/data', 10)
+        self.bad_msg = False
 
         # publisher for VERBOSE
         self.verbose_pub_ = self.create_publisher(String, '/verbose', 10)
@@ -63,9 +65,21 @@ class ArduinoSerialManagerNode(Node):
             if len(parts[1:]) == 10:     # 10 is the expected number of parts needed from the IMU
                 self.publish_imu_data(parts[1:])
             else:
-                self.get_logger().warn(f"Not all field filled in IMU line: {line}")
+                self.get_logger().warn(f"Not all fields filled in IMU line: {line}")
         else:
             self.get_logger().warn(f"Failed to parse data: {line}")
+
+    def safe_float(self, value):
+        value = value.strip()
+
+        # keep only digits, decimal point, minus sign, plus sign, exponent chars
+        value = re.sub(r'[^0-9\+\-\.]', '', value)
+
+        # valid float pattern
+        if not re.fullmatch(r'[+-]?(\d+(\.\d*)?|\.\d+)', value):
+            self.bad_msg = True
+
+        return float(value)
 
     def publish_imu_data(self, imu_data):
         if len(imu_data) < 10:
@@ -79,22 +93,26 @@ class ArduinoSerialManagerNode(Node):
         msg.header.frame_id = 'imu_link'
 
         # Orientation (quaternion)
-        msg.orientation.w = float(imu_data[0].strip())
-        msg.orientation.x = float(imu_data[1].strip())
-        msg.orientation.y = float(imu_data[2].strip())
-        msg.orientation.z = float(imu_data[3].strip())
+        msg.orientation.w = self.safe_float(imu_data[0].strip())
+        msg.orientation.x = self.safe_float(imu_data[1].strip())
+        msg.orientation.y = self.safe_float(imu_data[2].strip())
+        msg.orientation.z = self.safe_float(imu_data[3].strip())
 
         # Angular velocity (rad/s)
-        msg.angular_velocity.x = float(imu_data[4].strip())
-        msg.angular_velocity.y = float(imu_data[5].strip())
-        msg.angular_velocity.z = float(imu_data[6].strip())
+        msg.angular_velocity.x = self.safe_float(imu_data[4].strip())
+        msg.angular_velocity.y = self.safe_float(imu_data[5].strip())
+        msg.angular_velocity.z = self.safe_float(imu_data[6].strip())
 
         # Linear acceleration (m/s^2)
-        msg.linear_acceleration.x = float(imu_data[7].strip())
-        msg.linear_acceleration.y = float(imu_data[8].strip())
-        msg.linear_acceleration.z = float(imu_data[9].strip())
+        msg.linear_acceleration.x = self.safe_float(imu_data[7].strip())
+        msg.linear_acceleration.y = self.safe_float(imu_data[8].strip())
+        msg.linear_acceleration.z = self.safe_float(imu_data[9].strip())
 
-        self.imu_pub_.publish(msg)
+        if not self.bad_msg:
+            self.imu_pub_.publish(msg)
+        else:
+            self.get_logger().warn("Bad IMU packet, skipping")
+            self.bad_msg = False
 
 
 

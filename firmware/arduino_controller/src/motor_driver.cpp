@@ -81,6 +81,14 @@ void run_motors(int left_drive, int right_drive) {
   int targetLeft  = left_drive;
   int targetRight = right_drive;
 
+  // // add motor trim. note: -pwm = forward, +pwm = backward
+  // if (targetLeft < 0 && targetRight < 0) {
+  //   targetRight += -1; // Adjust for turning right when going forward
+  // }
+  // if (targetRight > 0 && targetLeft > 0) {
+  //   targetLeft += 1; // Adjust for turning left when going backward
+  // }
+
   targetLeft  = constrain(targetLeft, -MAX_PWM, MAX_PWM);
   targetRight = constrain(targetRight, -MAX_PWM, MAX_PWM);
 

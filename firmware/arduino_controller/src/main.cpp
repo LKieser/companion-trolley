@@ -63,12 +63,12 @@ void loop() {
         case AUTONMOUS_MODE:
           read_message_from_pi(&left_drive, &right_drive);
           break;
+        default:
+          left_drive = 0;
+          right_drive = 0;
+          Serial.print("VERBOSE,");
+          Serial.println("Mode broken. Default to 0 PWM");
       }
-
-      // if (now - lastSafetyStop >= safetyPeriod) {
-      //   lastSafetyStop = now;
-      //   delay(2000);
-      // }
 
       // pwm messages for pi
       Serial.print("VERBOSE,");

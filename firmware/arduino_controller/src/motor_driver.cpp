@@ -41,8 +41,6 @@ int rampPWM(int current, int target) {
 
 // Motor control
 void setMotor(int rpwm, int lpwm, int speedVal) {
-  // add limits to PWM
-  speedVal = constrain(speedVal, -MAX_PWM, MAX_PWM);
   // avoid stall currrent deadzone between 10 and -10
   if (speedVal > 0 && speedVal < MIN_PWM) {
     speedVal = MIN_PWM;

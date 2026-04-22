@@ -51,14 +51,14 @@ controller_server:
       debug_trajectory_details: false
 
       min_vel_x: 0.0
-      max_vel_x: 0.56 # roughly 50 pwm
+      max_vel_x: 0.45 # 56 is roughly 50 pwm so set below that to allow for turning
       min_vel_y: 0.0
       max_vel_y: 0.0
       max_vel_theta: 1.0
 
-      min_speed_xy: 0.0
-      max_speed_xy: 0.56 # roughly 50 pwm
-      min_speed_theta: 0.0
+      min_speed_xy: 0.17 # lowest reliable speed to keep wheels at same speed
+      max_speed_xy: 0.45
+      min_speed_theta: 0.8 # goes to 0.17 after wheel base calculation
 
       acc_lim_x: 0.8
       acc_lim_y: 0.0
@@ -157,6 +157,7 @@ global_costmap:
       transform_tolerance: 0.3
       #             front-left   ,   front-right  ,   back-right    ,   back-left (relative to robot_base_frame which is set to base_link)
       footprint: "[[0.2215, 0.20], [0.2215, -0.20], [-0.2215, -0.20], [-0.2215, 0.20]]"
+      footprint_padding: 0.05
 
       plugins: ["obstacle_layer", "inflation_layer"]
 
@@ -207,7 +208,7 @@ local_costmap:
 
       #             front-left   ,   front-right  ,   back-right    ,   back-left (relative to robot_base_frame which is set to base_link)
       footprint: "[[0.2215, 0.20], [0.2215, -0.20], [-0.2215, -0.20], [-0.2215, 0.20]]"
-
+      footprint_padding: 0.05
       plugins: ["obstacle_layer", "inflation_layer"]
 
       obstacle_layer:

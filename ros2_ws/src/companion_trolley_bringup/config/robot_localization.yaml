@@ -15,7 +15,7 @@ ekf_filter_node:
     imu0: /imu/data
     imu0_config: [
       false, false, false,   # x, y, z position
-      false, false, true,    # roll, pitch, yaw
+      false, false, false,    # roll, pitch, yaw
       false, false, false,   # vx, vy, vz
       false, false, true,    # vroll, vpitch, vyaw
       false, false, false    # ax, ay, az
@@ -26,14 +26,28 @@ ekf_filter_node:
     imu0_remove_gravitational_acceleration: false
     imu0_queue_size: 10
 
-    # Use cmd_vel as control input
-    use_control: true
-    stamped_control: false
-    control_timeout: 0.2
-    control_config: [true, false, false, false, false, true] # x, y, z, roll, pitch, yaw
+    # LiDAR input
+    odom0: /odom_rf2o
+    odom0_config: [
+      true,  true,  false,   # x, y, z position
+      false, false, true,    # roll, pitch, yaw
+      true,  false, false,   # vx, vy, vz
+      false, false, false,    # vroll, vpitch, vyaw
+      false, false, false    # ax, ay, az
+    ]
 
-    # tell system the robot will take time to slow down
-    acceleration_limits:  [1.0, 0.0, 0.0, 0.0, 0.0, 2.0]
-    deceleration_limits:  [1.0, 0.0, 0.0, 0.0, 0.0, 2.0]
-    acceleration_gains:   [1.0, 0.0, 0.0, 0.0, 0.0, 1.0]
-    deceleration_gains:   [1.0, 0.0, 0.0, 0.0, 0.0, 1.0]
+    odom0_differential: false
+    odom0_relative: false
+    odom0_queue_size: 10
+
+    # Use cmd_vel as control input
+    use_control: false
+    # stamped_control: false
+    # control_timeout: 0.2
+    # control_config: [true, false, false, false, false, true] # x, y, z, roll, pitch, yaw
+
+    # # tell system the robot will take time to slow down
+    # acceleration_limits:  [1.0, 0.0, 0.0, 0.0, 0.0, 2.0]
+    # deceleration_limits:  [1.0, 0.0, 0.0, 0.0, 0.0, 2.0]
+    # acceleration_gains:   [1.0, 0.0, 0.0, 0.0, 0.0, 1.0]
+    # deceleration_gains:   [1.0, 0.0, 0.0, 0.0, 0.0, 1.0]

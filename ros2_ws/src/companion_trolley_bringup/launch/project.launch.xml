@@ -3,9 +3,24 @@
     <node pkg="robot_state_publisher" exec="robot_state_publisher" args="$(find-pkg-share companion_trolley_description)/urdf/companion_trolley.urdf" />
     <!-- Launch LiDAR -->
     <include file="$(find-pkg-share companion_trolley_bringup)/launch/lidar.launch.py" />
+    <!-- Launch LiDAR Localization -->
+    <node pkg="rf2o_laser_odometry"
+          exec="rf2o_laser_odometry_node"
+          name="rf2o_laser_odometry"
+          output="screen"
+          args="--ros-args --log-level error">
+
+        <param name="laser_scan_topic" value="/scan"/>
+        <param name="odom_topic" value="/odom_rf2o"/>
+        <param name="publish_tf" value="false"/>
+        <param name="base_frame_id" value="base_link"/>
+        <param name="odom_frame_id" value="odom"/>
+        <param name="init_pose_from_topic" value=""/>
+        <param name="freq" value="15.0"/>
+    </node>
     <!-- Launch Arduino Serial Manager-->
     <node pkg="my_py_pkg" exec="arduino_serial_manager" />
-    <!-- Launch Robot_localization for odom to base_link-->
+    <!-- Launch Robot_localization for odom to base_link -->
     <node
     pkg="robot_localization"
     exec="ekf_node"

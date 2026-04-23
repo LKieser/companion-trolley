@@ -1,6 +1,0 @@
-<launch>
-    <node pkg="my_py_pkg" exec="arduino_serial_manager" />
-    <node pkg="my_py_pkg" exec="uwb_driver" />
-    <node pkg="my_py_pkg" exec="target_follower" />
-    <node pkg="my_py_pkg" exec="local_planner_tester" />
-</launch>

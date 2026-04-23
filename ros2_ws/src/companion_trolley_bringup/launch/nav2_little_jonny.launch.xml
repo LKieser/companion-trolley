@@ -31,6 +31,13 @@
     <!-- Launch UWB -->
     <node pkg="my_py_pkg" exec="uwb_driver" />
     <node pkg="my_py_pkg" exec="target_follower" />
-    <!-- Launch local planner -->
-    <node pkg="my_py_pkg" exec="local_planner_tester" />
+    <!-- Launch temporary target follower -->
+    <!-- <node pkg="my_py_pkg" exec="local_planner_tester" /> -->
+    <!-- Launch cmd_vel_smoothed to cmd_vel forwarder -->
+    <node pkg="my_py_pkg" exec="cmd_vel_smoothed_forward" />
+    <!-- Launch Nav2 -->
+    <include file="$(find-pkg-share companion_trolley_bringup)/launch/navigation_launch.py">
+        <arg name="use_sim_time" value="false"/>
+        <arg name="params_file" value="$(find-pkg-share companion_trolley_bringup)/config/nav2_custom_params.yaml"/>
+    </include>
 </launch>

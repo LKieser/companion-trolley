@@ -56,7 +56,7 @@ controller_server:
       max_vel_y: 0.0
       max_vel_theta: 1.0
 
-      min_speed_xy: 0.17 # lowest reliable speed to keep wheels at same speed
+      min_speed_xy: 0.17 # 0.17 = 15 pwm which is the lowest reliable speed to keep wheels at same speed
       max_speed_xy: 0.45
       min_speed_theta: 0.8 # goes to 0.17 after wheel base calculation
 

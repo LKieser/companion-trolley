@@ -12,19 +12,10 @@ class LocalPlannerTesterNode(Node):
         self.cmd_pub_ = self.create_publisher(Twist, "cmd_vel", 10)
         self.get_logger().info("Local Planner Tester Node Initiated")
 
-        self.cmd_vel_ready = False
-        self.last_changed_x = 0.0
-        self.last_changed_y = 0.0
-
     # send the cmd_vel message every time the goal is updated
     def goal_callback(self, msg: PoseStamped):
-        # make sure change is significant enough
-        # if abs(self.last_changed_x - msg.pose.position.x) > 0.3 or abs(self.last_changed_y - msg.pose.position.y) > 0.3:
-        self.last_changed_x = msg.pose.position.x
-        self.last_changed_y = msg.pose.position.y
-
         # recieve the x,y back as the angular z and linear x
-        temp_x, temp_y = self.compute_cmd(self.last_changed_x, self.last_changed_y)
+        temp_x, temp_y = self.compute_cmd(msg.pose.position.x, msg.pose.position.y)
 
         # publish the cmd_vel message
         vel_msg = Twist()
@@ -69,7 +60,6 @@ class LocalPlannerTesterNode(Node):
         if distance_error < 0:
             angular_z = 0
 
-        # self.get_logger().info(f"linear_x: {linear_x}, angular_z: {angular_z}")
         return linear_x, angular_z
 
 def main(args=None):

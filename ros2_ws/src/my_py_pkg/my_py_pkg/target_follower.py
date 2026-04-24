@@ -20,12 +20,9 @@ class TargetFollowerNode(Node):
             # self.get_logger().warn(f"High RMSE ({msg.rmse}), ignoring UWB data")
             return
 
-        alpha = 0.1 # smoothing factor
+        alpha = 0.3 # smoothing factor
         self.smoothed_x = alpha * msg.x + (1 - alpha) * self.smoothed_x
         self.smoothed_y = alpha * msg.y + (1 - alpha) * self.smoothed_y
-
-        # apply heavier smoothing for testing
-
 
         # publish smoothed data
         pose_msg = PoseStamped()

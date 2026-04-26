@@ -20,7 +20,7 @@
 // Calculate with RPM * 0.56(wheel sircumferance) / 60 sec
 
 const int MAX_PWM = 50; // PWM of 191 = 18v = 2.69 m/s || PWM of 50 ~ 0.75 m/s
-const int MIN_PWM = 10; // Lowest PWM before stall current
+const int MIN_PWM = 15; // Lowest reliable PWM before stall current ~ 0.17 m/s
 const int RAMP_STEP = 2;
 
 // Soft start tracking
@@ -42,11 +42,10 @@ int rampPWM(int current, int target) {
 // Motor control
 void setMotor(int rpwm, int lpwm, int speedVal) {
   // avoid stall currrent deadzone between 10 and -10
-  if (speedVal > 0 && speedVal < MIN_PWM) {
-    speedVal = MIN_PWM;
-  }
-  if (speedVal < 0 && speedVal > -MIN_PWM) {
-    speedVal = -MIN_PWM;
+  if (speedVal > 0 && speedVal < MIN_PWM || speedVal < 0 && speedVal > -MIN_PWM) {
+    speedVal = 0;
+    Serial.print("VERBOSE,");
+    Serial.println("Below min stall current. PWM set to 0");
   }
 
   if (speedVal > 0) {
@@ -73,8 +72,6 @@ void setup_motor_driver() {
     digitalWrite(L_LEN, HIGH);
     digitalWrite(R_REN, HIGH);
     digitalWrite(R_LEN, HIGH);
-
-    Serial.println("System Ready");
 }
 
 void run_motors(int left_drive, int right_drive) {

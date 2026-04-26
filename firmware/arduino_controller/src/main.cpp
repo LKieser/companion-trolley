@@ -44,21 +44,23 @@ void loop() {
       lastImuRead = now;
       read_imu();
     }
-    // Joystick Button
-    if (now - lastButtonCheck >= buttonPeriod) {
-      lastButtonCheck = now;
-      button_pressed = read_joystick_button();
-      if (button_pressed) {
-        mode = !mode;
-      }
-      // Serial.println(mode);
-    }
+    // // Joystick Button
+    // if (now - lastButtonCheck >= buttonPeriod) {
+    //   lastButtonCheck = now;
+    //   button_pressed = read_joystick_button();
+    //   if (button_pressed) {
+    //     mode = !mode;
+    //     Serial.print("Button Pressed. Mode switched to: ");
+    //     Serial.println(mode);
+    //   }
+    // }
     // Motor operation
     if (now - lastMotorRun >= motorPeriod) {
       lastMotorRun = now;
       switch (mode) {
         case JOYSTICK_MODE:
-          read_joystick_drive(&left_drive, &right_drive);
+          // read_joystick_drive(&left_drive, &right_drive);
+          Serial.println("Joystick mode");
           break;
         case AUTONMOUS_MODE:
           read_message_from_pi(&left_drive, &right_drive);
@@ -66,15 +68,14 @@ void loop() {
         default:
           left_drive = 0;
           right_drive = 0;
-          Serial.print("VERBOSE,");
           Serial.println("Mode broken. Default to 0 PWM");
       }
 
       // pwm messages for pi
-      Serial.print("VERBOSE,");
-      Serial.print(left_drive);
-      Serial.print(",");
-      Serial.println(right_drive);
+      // Serial.print("VERBOSE,");
+      // Serial.print(left_drive);
+      // Serial.print(",");
+      // Serial.println(right_drive);
       run_motors(left_drive, right_drive);
     }
 

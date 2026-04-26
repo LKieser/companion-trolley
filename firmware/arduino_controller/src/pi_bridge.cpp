@@ -26,7 +26,7 @@ void read_message_from_pi(int* left_drive, int* right_drive) {
         // Parse the string
         int index_one = input.indexOf(',');
         if (index_one == -1) {
-            Serial.print("DEBUG, Bad message on arduino serial");
+            Serial.print("Bad message on arduino serial");
         } // protect against no comma
         String header = input.substring(0, index_one); // grabs the substring from position 1 to 1 before the comma position
 
@@ -54,7 +54,7 @@ void convert_to_pwm(float linear_x, float angular_z, int* left_drive, int* right
     float right_velocity = linear_x + (angular_z * (WHEEL_BASE/2));
 
     // ensure neither value is higher than it should be
-    float max_velocity = max(abs(left_velocity), abs(right_velocity));
+    float max_velocity = max(fabs(left_velocity), fabs(right_velocity));
     if (max_velocity > MAX_SPEED) {
         float scale = MAX_SPEED / max_velocity;
         left_velocity *= scale;

@@ -12,8 +12,10 @@ class ArduinoSerialManagerNode(Node):
         super().__init__("arduino_serial_manager")
 
         # serial line setup
-        self.ser = serial.Serial('/dev/ttyACM0', 115200, timeout=0.01)
+        self.ser = serial.Serial('/dev/ttyACM0', 230400, timeout=0.01, write_timeout=0.01)
         time.sleep(2) # wait for serial to initialize on arduino
+        self.ser.reset_input_buffer()
+        self.ser.reset_output_buffer()
         self.timer = self.create_timer(0.01, self.read_serial) # check for incoming serial data
 
         # publisher for IMU
@@ -33,19 +35,23 @@ class ArduinoSerialManagerNode(Node):
         linear_x = vel_msg.linear.x
         angular_z = vel_msg.angular.z
         # send the x and y position as a comma separated string over serial to the arduino
-        serial_data = f"CMD_VEL, {linear_x},{angular_z}\n"
+        serial_data = f"CMD_VEL,{linear_x},{angular_z}\n"
         self.ser.write(serial_data.encode('utf-8'))
 
     def read_serial(self):
-        # check if there is serial dat waiting
-        if self.ser.in_waiting == 0:
-            return
+        max_lines = 20
 
-        # get serial data in the line
-        line = self.ser.readline().decode('utf-8', errors='ignore').strip()
-        if not line:
-            return
+        for _ in range(max_lines):
+            if self.ser.in_waiting == 0:
+                break
 
+            line = self.ser.readline().decode("utf-8", errors="ignore").strip()
+            if not line:
+                continue
+
+            self.process_serial_line(line)
+
+    def process_serial_line(self, line):
         # split the serial data coming in as a string into individual floats
         parts = line.split(',')
 
@@ -59,7 +65,6 @@ class ArduinoSerialManagerNode(Node):
             pwm_string = ','.join(parts[1:])
             verb_msg = String()
             verb_msg.data = f"PWM: LEFT, RIGHT: {pwm_string}"
-            verb_msg.data
             self.verbose_pub_.publish(verb_msg)
         elif parts[0].strip() == "IMU":
             if len(parts[1:]) == 10:     # 10 is the expected number of parts needed from the IMU

@@ -43,7 +43,8 @@ class LocalPlannerTesterNode(Node):
 
     def imu_callback(self, msg: Imu):
         raw_imu_gyro_z = msg.angular_velocity.z
-        alpha = 0.5  # smaller = smoother, larger = more responsive
+        # EWMA to smooth the IMU input
+        alpha = 0.5
         self.imu_gyro_z = alpha * raw_imu_gyro_z + (1.0 - alpha) * self.imu_gyro_z
         self.last_imu_time = self.get_clock().now()
 

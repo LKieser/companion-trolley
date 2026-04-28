@@ -7,14 +7,14 @@
 // ================= JOYSTICK =================
 #define JOY_X A0
 #define JOY_Y A1
-#define JOY_SW 8
+#define JOY_SW 9
 
-int deadzone = 15;
+int deadzone = 50;
 int lastButtonState = 1;
 
 // ================= PID =================
 float Kp = 1.0;
-float Ki = 1.0;
+float Ki = 0.0;
 float Kd = 0.0;
 
 float targetHeading = 0;
@@ -48,7 +48,8 @@ void setup_joystick(){
 
 bool read_joystick_button() {
     int buttonState = digitalRead(JOY_SW);
-    // Serial.println(buttonState);
+    Serial.print("buttons state:");
+    Serial.println(buttonState);
     if (lastButtonState == 1 && buttonState == 0) {
         if (buttonState == 0) {
             lastButtonState = buttonState;
@@ -61,6 +62,7 @@ bool read_joystick_button() {
 }
 
 void read_joystick_drive(int* left_drive, int* right_drive){
+    error = 0;
     // Read Joystick
     int rawX = analogRead(JOY_X);
     int rawY = analogRead(JOY_Y);
@@ -76,7 +78,7 @@ void read_joystick_drive(int* left_drive, int* right_drive){
 
     currentHeading = getHeading();
 
-    error = targetHeading - currentHeading;
+    error = targetHeading; //- currentHeading;
 
     if (error > 180) error -= 360;
     if (error < -180) error += 360;

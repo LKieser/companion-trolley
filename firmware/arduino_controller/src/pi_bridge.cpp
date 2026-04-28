@@ -14,34 +14,36 @@ const unsigned long timeoutPeriod = 1000;
 void convert_to_pwm(float linear_x, float angular_z, int* left_drive, int* right_drive);
 
 void setup_pi_bridge() {
-     Serial.setTimeout(20); // this is for the readStringUntil() function for the serial to stop it from blocking the full 1000ms when waiting for a message
+     Serial.setTimeout(2); // this is for the readStringUntil() function for the serial to stop it from blocking the full 1000ms when waiting for a message
 }
 
 void read_message_from_pi(int* left_drive, int* right_drive) {
     unsigned long now = millis();
-    if (Serial.available() > 0) {
+    String latest_cmd = "";
+
+    while (Serial.available() > 0) {
         String input = Serial.readStringUntil('\n');
         input.trim();
 
-        // Parse the string
-        int index_one = input.indexOf(',');
-        if (index_one == -1) {
-            Serial.print("Bad message on arduino serial");
-        } // protect against no comma
-        String header = input.substring(0, index_one); // grabs the substring from position 1 to 1 before the comma position
+        if (input.startsWith("CMD_VEL,")) {
+            latest_cmd = input;  // keep overwriting; newest wins
+        }
+    }
+    if (latest_cmd.length() > 0) {
+        int index_one = latest_cmd.indexOf(',');
+        int index_two = latest_cmd.indexOf(',', index_one + 1);
 
-        if (header == "CMD_VEL") {
+        if (index_one != -1 && index_two != -1) {
+            float linear_x = latest_cmd.substring(index_one + 1, index_two).toFloat();
+            float angular_z = latest_cmd.substring(index_two + 1).toFloat();
+
             lastCmdVel = now;
-            int index_two = input.indexOf(',', index_one + 1); // starts at one spot ahead of the last index and looks for next comma
-
-            // Extract the two floats
-            float linear_x = input.substring(index_one + 1, index_two).toFloat();
-            float angular_z = input.substring(index_two + 1).toFloat();
             convert_to_pwm(linear_x, angular_z, left_drive, right_drive);
         }
     }
     // timeout watchdog to stop the motors after 1 second of no new commands
     if (now - lastCmdVel >= timeoutPeriod) {
+        lastCmdVel = now;
         *left_drive = 0;
         *right_drive = 0;
     }

@@ -1,6 +1,7 @@
 #include <Adafruit_Sensor.h>
 
 #include "motor_driver.h"
+#include "led_driver.h"
 
 // ================= MOTOR =================
 // Left motor
@@ -42,12 +43,17 @@ int rampPWM(int current, int target) {
 // Motor control
 void setMotor(int rpwm, int lpwm, int speedVal) {
   // avoid stall currrent deadzone
-  // Serial.print("speedVal: ");
-  // Serial.println(speedVal);
   if ((speedVal > 0 && speedVal < MIN_PWM) || (speedVal < 0 && speedVal > -MIN_PWM)) {
     speedVal = 0;
     Serial.print("VERBOSE,");
     Serial.println("Below min stall current. PWM set to 0");
+  }
+
+  if (speedVal == 0) {
+    red();
+  }
+  else {
+    green();
   }
 
   if (speedVal > 0) {

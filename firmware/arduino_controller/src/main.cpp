@@ -69,12 +69,6 @@ void loop() {
           break;
         case AUTONMOUS_MODE:
           read_message_from_pi(&left_drive, &right_drive);
-          if (left_drive != 0 || right_drive != 0) {
-            green();
-          }
-          else {
-            red();
-          }
           break;
         default:
           left_drive = 0;

@@ -8,5 +8,8 @@
         "/home/luke/ros2_ws/install/my_py_pkg/lib/python3.12/site-packages",
         "/opt/ros/jazzy/lib/python3.12/site-packages"
     ],
-    "cmake.ignoreCMakeListsMissing": true
+    "cmake.ignoreCMakeListsMissing": true,
+    "cSpell.words": [
+        "Adafruit"
+    ]
 }
